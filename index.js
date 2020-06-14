@@ -6,11 +6,19 @@ const shellEscape = require('shell-escape');
 const app = express();
 
 const PORT = 3000;
-const BASE_CMD = ['irsend', '-d', '/dev/lirc0'];
+const BASE_CMD = process.env.BASE_CMD?.split?.(' ') ?? ['irsend'];
+const AUTH_TOKEN = process.env.AUTH_TOKEN ?? '';
 
 app.use((req, _, next) => {
   const query = Object.entries(req.query).map(([key, value]) => `${key}=${value}`).join('&');
   console.log(`< ${req.originalUrl.split("?").shift()}: ${query}`);
+  next();
+});
+
+app.use((req, res, next) => {
+  if (req.headers['X-Auth-Token'] !== AUTH_TOKEN) {
+    return res.status(403).send();
+  }
   next();
 });
 
