@@ -16,7 +16,7 @@ app.use((req, _, next) => {
 });
 
 app.use((req, res, next) => {
-  if (req.headers['X-Auth-Token'] !== AUTH_TOKEN) {
+  if (req.headers['x-auth-token'] !== AUTH_TOKEN) {
     return res.status(403).send();
   }
   next();
